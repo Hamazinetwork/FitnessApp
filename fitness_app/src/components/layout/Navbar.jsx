@@ -9,8 +9,8 @@ export default function Navbar() {
       <h1 className="font-bold text-xl">FitnessTracker</h1>
       <div className="space-x-4">
         <Link to="/">Home</Link>
-        <Link to="/add">Add Workout</Link>
-        <Link to="/history">History</Link>
+        <Link to="/add">Add WorkoutDetails</Link>
+        <Link to="/history">Summary</Link>
         <Link to="/progress">Progress</Link>
         {user ? (
           <button onClick={logoutUser} className="ml-3 bg-red-500 px-3 py-1 rounded">
