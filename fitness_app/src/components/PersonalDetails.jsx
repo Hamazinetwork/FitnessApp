@@ -1,67 +1,98 @@
-import React from 'react'
+import React, { useState } from 'react';
 
 const PersonalDetails = () => {
-    const handleChange=()=>{
-        const {name, value}= e.target;
-        setFormData((prev)=>({
-          ...prev,
-          [name]: value,  
-        }))
-    }
-const BmiValue = (weight/(height*height)).toFixed(1)
+  const [formData, setFormData] = useState({
+    age: '',
+    weight: '',
+    height: '',
+    sex: '',
+  });
+  const [bmi, setBmi] = useState(null);
+  const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const handleBmi= (e)=>{
-        e.preventDefault(),
-        setLoading(True),
-        {BmiValue}
-        if (BmiValue < 18.5){
-            setDescription("You're Underweigh");
-        }elif if(BmiValue >=18.5 && BmiValue< 25){
-            setDescription("your weight is good");
-        }elif if(BmiValue >=25 && BmiValue< 30){
-            setDescription("You're Overweigh");
-        }elif if(BmiValue >= 30){
-            setDescription("you are Obese, please Exercise and diet");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-        
+  const handleBmi = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const weight = parseFloat(formData.weight);
+    const height = parseFloat(formData.height) / 100; 
+    if (!weight || !height) return;
+
+    const bmiValue = (weight / (height * height)).toFixed(1);
+    setBmi(bmiValue);
+
+    if (bmiValue < 18.5) {
+      setDescription("You're underweight");
+    } else if (bmiValue >= 18.5 && bmiValue < 25) {
+      setDescription('Your weight is normal');
+    } else if (bmiValue >= 25 && bmiValue < 30) {
+      setDescription("You're overweight");
+    } else {
+      setDescription('You are obese, please exercise and watch your diet');
     }
+
+    setLoading(false);
+  };
+
   return (
     <div>
-        <label>Age</label>
+      <label>Age</label>
       <input
-      type="number"
-      placeholder='Age'
-      name='FormData'
-      value='FormData.Age'
-      onChange={handleChange}
+        type="number"
+        placeholder="Age"
+        name="age"
+        value={formData.age}
+        onChange={handleChange}
       />
-         <label>Weight</label>
-      <input
-      type="number"
-      placeholder='Weight'
-      name='FormData'
-      value='FormData.Weight'
-      onChange={handleChange}
-      />
-         <label>Sex</label>
-      <input
-      type="text"
-      placeholder='Age'
-      name='FormData'
-      value='FormData.Sex'
-      onChange={handleChange}
-      />
-         <label>Height</label>
-      <input
-      type="number"
-      placeholder='Height'
-      name='FormData'
-      value='FormData.Heigth'
-      onChange={handleChange}
-      />
-      <button type='button' onClick={handleBmi}>Calculate BMI</button>
-    </div>
-  )
-}
 
-export default PersonalDetails
+      <label>Weight (kg)</label>
+      <input
+        type="number"
+        placeholder="Weight"
+        name="weight"
+        value={formData.weight}
+        onChange={handleChange}
+      />
+
+      <label>Sex</label>
+      <input
+        type="text"
+        placeholder="Sex"
+        name="sex"
+        value={formData.sex}
+        onChange={handleChange}
+      />
+
+      <label>Height (cm)</label>
+      <input
+        type="number"
+        placeholder="Height"
+        name="height"
+        value={formData.height}
+        onChange={handleChange}
+      />
+
+      <button type="button" onClick={handleBmi}>
+        {loading ? 'Calculating...' : 'Calculate BMI'}
+      </button>
+
+      {bmi && (
+        <div>
+          <h3>Your BMI: {bmi}</h3>
+          <p>{description}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PersonalDetails;
