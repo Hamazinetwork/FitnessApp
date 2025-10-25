@@ -1,78 +1,103 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 const WorkoutDetails = () => {
-    const[FormData, setFormData]=useState({
-        Date:"",
-        Reps:"",
-        Sets:"",
-        Casets:"",
+  const [formData, setFormData] = useState({
+    date: '',
+    reps: '',
+    sets: '',
+    casets: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-    })
-    const handleChange=(e)=>{
-        const{name,value }= e.value.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]:value
-        }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-        )
-        )
-    }
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(True);
-    try{
-        const response = await fetch({
-            method:'POST',
-            header:{
-                'content-type':'application/json',
-                'accept':'application/json',
-            },
-            body: JSON.stringify(FormData),
-        });
-        const data = response.json().catch(()=>({}));
-        if (!response.ok){
-            throw new Error ("invalid Entery")
-        }
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/workouts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid entry');
+      }
+
+      const data = await response.json();
+      setMessage('Workout saved successfully!');
+      console.log('Saved workout:', data);
+
+      
+      setFormData({
+        date: '',
+        reps: '',
+        sets: '',
+        casets: '',
+      });
+    } catch (error) {
+      setMessage(error.message || 'Something went wrong.');
+    } finally {
+      setLoading(false);
     }
-   }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-        <label>Date</label>
-        <input
-        placeholder="DD/MM/YYYY"
-        name="Date"
+      <label>Date</label>
+      <input
         type="date"
-        value="FormData.Date"
+        name="date"
+        value={formData.date}
         onChange={handleChange}
-        />
-         <label>Reps</label>
-        <input
-        placeholder="Enter reps"
-        name="Reps"
-        type="text"
-        value="FormData.Reps"
-        onChange={handleChange}
-        />
-        <label>Sets</label>
-        <input
-        placeholder="Enter sets"
-        name="Sets"
-        type="text"
-        value="FormData.Sets"
-        onChange={handleChange}
-        />
-        <label>Casets</label>
-        <input
-        placeholder="Enter casets"
-        name="Casets"
-        type="text"
-        value="FormData.Casets"
-        onChange={handleChange}
-        />
-        <button type="submit">Enter</button>
-    </form>
-  )
-}
+      />
 
-export default WorkoutDetails
+      <label>Reps</label>
+      <input
+        type="text"
+        name="reps"
+        placeholder="Enter reps"
+        value={formData.reps}
+        onChange={handleChange}
+      />
+
+      <label>Sets</label>
+      <input
+        type="text"
+        name="sets"
+        placeholder="Enter sets"
+        value={formData.sets}
+        onChange={handleChange}
+      />
+
+      <label>Casets</label>
+      <textarea
+        name="casets"
+        placeholder="Enter casets"
+        value={formData.casets}
+        onChange={handleChange}
+      />
+
+      <button type="submit" disabled={loading}>
+        {loading ? 'Saving...' : 'Enter'}
+      </button>
+
+      {message && <p>{message}</p>}
+    </form>
+  );
+};
+
+export default WorkoutDetails;
