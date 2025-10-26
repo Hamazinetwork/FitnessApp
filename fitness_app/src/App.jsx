@@ -4,12 +4,12 @@ import PersonalDetails from './components/PersonalDetails'
 import Summary from './components/Summary'
 import WorkoutDetails from './components/WorkoutDetails'
 import Navbar from './components/layout/Navbar'
-
+import ExerciseSearch from './components/ExerciseSearch'
 
 const App = () => {
   return (
     <div>
-      <Navbar/>
+      <ExerciseSearch/>
       <PersonalDetails/>
       <WorkoutDetails/>
       <Summary/>

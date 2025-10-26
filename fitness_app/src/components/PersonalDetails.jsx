@@ -44,7 +44,7 @@ const PersonalDetails = () => {
   };
 
   return (
-    <div>
+    <div className='bg-black text-white'>
       <label>Age</label>
       <input
         type="number"
