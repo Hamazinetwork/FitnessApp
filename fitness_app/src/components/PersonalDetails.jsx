@@ -1,98 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-const PersonalDetails = () => {
-  const [formData, setFormData] = useState({
-    age: '',
-    weight: '',
-    height: '',
-    sex: '',
-  });
-  const [bmi, setBmi] = useState(null);
-  const [description, setDescription] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function PersonalDetails(){
+  const [age, setAge] = useState('')
+  const [sex, setSex] = useState('')
+  const [height, setHeight] = useState('')
+  const [weight, setWeight] = useState('')
+  const [bmi, setBmi] = useState(null)
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleBmi = (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const weight = parseFloat(formData.weight);
-    const height = parseFloat(formData.height) / 100; 
-    if (!weight || !height) return;
-
-    const bmiValue = (weight / (height * height)).toFixed(1);
-    setBmi(bmiValue);
-
-    if (bmiValue < 18.5) {
-      setDescription("You're underweight");
-    } else if (bmiValue >= 18.5 && bmiValue < 25) {
-      setDescription('Your weight is normal');
-    } else if (bmiValue >= 25 && bmiValue < 30) {
-      setDescription("You're overweight");
-    } else {
-      setDescription('You are obese, please exercise and watch your diet');
-    }
-
-    setLoading(false);
-  };
+  function calculate(){
+    // assume height in cm, weight in kg
+    const h = parseFloat(height)
+    const w = parseFloat(weight)
+    if(!h || !w) return alert('Enter height (cm) and weight (kg).')
+    const meters = h / 100
+    const value = (w / (meters * meters)).toFixed(1)
+    setBmi(value)
+  }
 
   return (
-    <div className='bg-black text-white'>
-      <label>Age</label>
-      <input
-        type="number"
-        placeholder="Age"
-        name="age"
-        value={formData.age}
-        onChange={handleChange}
-      />
-
-      <label>Weight (kg)</label>
-      <input
-        type="number"
-        placeholder="Weight"
-        name="weight"
-        value={formData.weight}
-        onChange={handleChange}
-      />
-
-      <label>Sex</label>
-      <input
-        type="text"
-        placeholder="Sex"
-        name="sex"
-        value={formData.sex}
-        onChange={handleChange}
-      />
-
-      <label>Height (cm)</label>
-      <input
-        type="number"
-        placeholder="Height"
-        name="height"
-        value={formData.height}
-        onChange={handleChange}
-      />
-
-      <button type="button" onClick={handleBmi}>
-        {loading ? 'Calculating...' : 'Calculate BMI'}
-      </button>
+    <div className="card">
+      <h3 className="text-lg font-semibold text-brand mb-4">Personal Details</h3>
+      <label className="text-sm text-gray-600">Age</label>
+      <input value={age} onChange={e=>setAge(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <label className="text-sm text-gray-600">Sex</label>
+      <input value={sex} onChange={e=>setSex(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <label className="text-sm text-gray-600">Height (cm)</label>
+      <input value={height} onChange={e=>setHeight(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <label className="text-sm text-gray-600">Weight (kg)</label>
+      <input value={weight} onChange={e=>setWeight(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <button onClick={calculate} className="bg-brand text-white px-3 py-2 rounded">Calculate BMI</button>
 
       {bmi && (
-        <div>
-          <h3>Your BMI: {bmi}</h3>
-          <p>{description}</p>
+        <div className="mt-4 p-3 bg-gray-50 rounded">
+          <p className="text-sm">Your BMI: <span className="font-semibold">{bmi}</span></p>
         </div>
       )}
     </div>
-  );
-};
-
-export default PersonalDetails;
+  )
+}

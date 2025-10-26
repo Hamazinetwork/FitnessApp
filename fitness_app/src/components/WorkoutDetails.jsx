@@ -1,103 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-const WorkoutDetails = () => {
-  const [formData, setFormData] = useState({
-    date: '',
-    reps: '',
-    sets: '',
-    casets: '',
-  });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+export default function WorkoutDetails(){
+  const [date, setDate] = useState('')
+  const [reps, setReps] = useState('')
+  const [sets, setSets] = useState('')
+  const [notes, setNotes] = useState('')
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage('');
-
-    try {
-      const response = await fetch('/api/workouts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Invalid entry');
-      }
-
-      const data = await response.json();
-      setMessage('Workout saved successfully!');
-      console.log('Saved workout:', data);
-
-      
-      setFormData({
-        date: '',
-        reps: '',
-        sets: '',
-        casets: '',
-      });
-    } catch (error) {
-      setMessage(error.message || 'Something went wrong.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  function handleEnter(){
+    const details = JSON.parse(localStorage.getItem('ft_details') || '[]')
+    details.push({ date, reps, sets, notes })
+    localStorage.setItem('ft_details', JSON.stringify(details))
+    setDate(''); setReps(''); setSets(''); setNotes('')
+    alert('Details saved (demo).')
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Date</label>
-      <input
-        type="date"
-        name="date"
-        value={formData.date}
-        onChange={handleChange}
-      />
-
-      <label>Reps</label>
-      <input
-        type="text"
-        name="reps"
-        placeholder="Enter reps"
-        value={formData.reps}
-        onChange={handleChange}
-      />
-
-      <label>Sets</label>
-      <input
-        type="text"
-        name="sets"
-        placeholder="Enter sets"
-        value={formData.sets}
-        onChange={handleChange}
-      />
-
-      <label>Casets</label>
-      <textarea
-        name="casets"
-        placeholder="Enter casets"
-        value={formData.casets}
-        onChange={handleChange}
-      />
-
-      <button type="submit" disabled={loading}>
-        {loading ? 'Saving...' : 'Enter'}
-      </button>
-
-      {message && <p>{message}</p>}
-    </form>
-  );
-};
-
-export default WorkoutDetails;
+    <div className="card">
+      <h3 className="text-lg font-semibold text-brand mb-4">Workout Details</h3>
+      <label className="text-sm text-gray-600">Date</label>
+      <input type="date" value={date} onChange={e=>setDate(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <label className="text-sm text-gray-600">Reps</label>
+      <input value={reps} onChange={e=>setReps(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <label className="text-sm text-gray-600">Sets</label>
+      <input value={sets} onChange={e=>setSets(e.target.value)} className="w-full mt-1 p-2 border rounded mb-3" />
+      <label className="text-sm text-gray-600">Notes</label>
+      <textarea value={notes} onChange={e=>setNotes(e.target.value)} rows="3" className="w-full mt-1 p-2 border rounded mb-3"></textarea>
+      <button onClick={handleEnter} className="bg-brand text-white px-4 py-2 rounded">Enter</button>
+    </div>
+  )
+}
