@@ -8,7 +8,7 @@ export default function SignIn(){
 
   function handleSubmit(e){
     e.preventDefault()
-    // demo auth: store simple user
+    
     const demoUser = { name: 'User', email }
     localStorage.setItem('ft_user', JSON.stringify(demoUser))
     navigate('/dashboard')

@@ -1,21 +1,31 @@
 import React from 'react'
-import Progress from './components/Progress'
-import PersonalDetails from './components/PersonalDetails'
-import Summary from './components/Summary'
-import WorkoutDetails from './components/WorkoutDetails'
-import Navbar from './components/layout/Navbar'
-import ExerciseSearch from './components/ExerciseSearch'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import SignIn from './pages/SignIn'
+import SignUp from './pages/SignUp'
+import Dashboard from './pages/Dashboard'
 
-const App = () => {
+function RequireAuth({ children }) {
+  const user = localStorage.getItem('ft_user')
+  return user ? children : <Navigate to="/signin" replace />
+}
+
+export default function App(){
   return (
-    <div>
-      <ExerciseSearch/>
-      <PersonalDetails/>
-      <WorkoutDetails/>
-      <Summary/>
-      <Progress/>
+    <div className="min-h-screen">
+      <Navbar />
+      <main className="container mx-auto px-6 py-8">
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/dashboard" element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          } />
+        </Routes>
+      </main>
     </div>
   )
 }
-
-export default App
